@@ -1,0 +1,4 @@
+little-chat
+===========
+
+A conference-like linux-chat created using gnu-linux sockets with Qt GUI.
