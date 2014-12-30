@@ -43,6 +43,10 @@ void Chat::on_btnSend_clicked()
     strcpy(mainInfo->message, message.c_str());
     ui->textEntry->clear();
 
+    std::string Sname(name);
+    std::string myMessage =  "Me(" + Sname + "): " + message;
+    ui->txtMessages->append(QString::fromStdString(myMessage));
+
     if (send(*sd, mainInfo, sizeof(struct package), 0) < 0)
         error("Error sending the message");
 }

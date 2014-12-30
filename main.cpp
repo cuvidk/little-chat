@@ -71,16 +71,18 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     char name[30];
+    char ip[20];
     struct package mainInfo;
     struct sockaddr_in server_address;
     pthread_t receiver;
 
     memset(&server_address, 0, sizeof(server_address));
     memset(&name, 0, sizeof(name));
+    memset(&ip, 0, sizeof(ip));
     memset(&names, 0, sizeof(names));
 
     Chat c(&sd, &mainInfo, name);
-    Login l(name);
+    Login l(ip, name);
     l.show();
     a.exec();
 
@@ -91,8 +93,19 @@ int main(int argc, char *argv[])
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(6666);
 
-    if (inet_pton(AF_INET, "127.0.0.1", &server_address.sin_addr.s_addr) < 0)
-        error("Error on inet_pton.\n");
+    if (strcmp(ip, "") == 0)    //then we are connecting to the main server
+    {
+        if (strcmp(name, "") == 0)  //if the name is also empty it's clear that the user pressed X
+            exit(0);
+        else
+            if (inet_pton(AF_INET, "127.0.0.1", &server_address.sin_addr.s_addr) < 0)
+                error("Error on inet_pton.\n");
+    }
+    else                        //we are connecting to the specified ip
+    {
+        if (inet_pton(AF_INET, ip, &server_address.sin_addr.s_addr) < 0)
+            error("Error on inet_pton.\n");
+    }
 
     if (connect(sd, (struct sockaddr*) &server_address, sizeof(server_address)) < 0)
         error("Error on connect.\n");
