@@ -25,6 +25,7 @@ protected:
 
 private slots:
     void on_btnSend_clicked();
+    void moveScrollBarToBottom(int min, int max);
 
 private:
     Ui::Chat *ui;

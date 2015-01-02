@@ -3,6 +3,7 @@
 
 #include <QShortcut>
 #include <QKeyEvent>
+#include <QScrollBar>
 
 Chat::Chat(int* sd, struct package* mainInfo, char* name, QWidget *parent) :
     QMainWindow(parent),
@@ -13,6 +14,8 @@ Chat::Chat(int* sd, struct package* mainInfo, char* name, QWidget *parent) :
 {
     ui->setupUi(this);
     ui->textEntry->installEventFilter(this);
+    QScrollBar* scrollbar = ui->txtMessages->verticalScrollBar();
+    QObject::connect(scrollbar, SIGNAL(rangeChanged(int,int)), this, SLOT(moveScrollBarToBottom(int, int)));
 }
 
 void Chat::setMessage(const std::string& msg)
@@ -49,7 +52,7 @@ void Chat::on_btnSend_clicked()
 
     std::string Sname(name);
     std::string myMessage =  "Me(" + Sname + "): " + message;
-    ui->txtMessages->append(QString::fromStdString(myMessage));
+    this->setMessage(myMessage);
 
     if (send(*sd, mainInfo, sizeof(struct package), 0) < 0)
         error("Error sending the message");
@@ -76,3 +79,8 @@ bool Chat::eventFilter(QObject *object, QEvent *event)
     }
 }
 
+void Chat::moveScrollBarToBottom(int min, int max)
+{
+    Q_UNUSED(min);
+    ui->txtMessages->verticalScrollBar()->setValue(max);
+}
