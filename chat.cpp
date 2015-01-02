@@ -1,6 +1,9 @@
 #include "chat.h"
 #include "ui_chat.h"
 
+#include <QShortcut>
+#include <QKeyEvent>
+
 Chat::Chat(int* sd, struct package* mainInfo, char* name, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Chat),
@@ -9,6 +12,7 @@ Chat::Chat(int* sd, struct package* mainInfo, char* name, QWidget *parent) :
     name(name)
 {
     ui->setupUi(this);
+    ui->textEntry->installEventFilter(this);
 }
 
 void Chat::setMessage(const std::string& msg)
@@ -50,3 +54,25 @@ void Chat::on_btnSend_clicked()
     if (send(*sd, mainInfo, sizeof(struct package), 0) < 0)
         error("Error sending the message");
 }
+
+bool Chat::eventFilter(QObject *object, QEvent *event)
+{
+    if (object == ui->textEntry && event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if (keyEvent->key() == Qt::Key_Return)
+        {
+            ui->btnSend->click();
+            return true;
+        }
+        else
+        {
+            return QMainWindow::eventFilter(object, event);
+        }
+    }
+    else
+    {
+        return QMainWindow::eventFilter(object, event);
+    }
+}
+

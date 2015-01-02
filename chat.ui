@@ -99,6 +99,9 @@
     <property name="text">
      <string>Send</string>
     </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

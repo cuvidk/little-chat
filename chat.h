@@ -20,6 +20,9 @@ public:
     void populateOnline(char names[100][30], int number);
     ~Chat();
 
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
+
 private slots:
     void on_btnSend_clicked();
 
